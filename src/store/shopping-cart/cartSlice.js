@@ -1,9 +1,21 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-const items =
-  localStorage.getItem("cartItems") !== null
-    ? JSON.parse(localStorage.getItem("cartItems"))
+
+
+const orderHistory = 
+  sessionStorage.getItem('orderHistory') !== null 
+  ? JSON.parse(sessionStorage.getItem("orderHistory"))
+  : [];
+
+const cartProduct =
+  localStorage.getItem("cartProduct") !== null
+    ? JSON.parse(localStorage.getItem("cartProduct"))
     : [];
+
+const cartCombo =
+  localStorage.getItem("cartCombo") !== null
+  ? JSON.parse(localStorage.getItem("cartCombo"))
+  : [];
 
 const totalAmount =
   localStorage.getItem("totalAmount") !== null
@@ -15,17 +27,43 @@ const totalQuantity =
     ? JSON.parse(localStorage.getItem("totalQuantity"))
     : 0;
 
-const setItemFunc = (item, totalAmount, totalQuantity) => {
-  localStorage.setItem("cartItems", JSON.stringify(item));
+const setItemFunc = ( cartProduct, cartCombo, totalAmount, totalQuantity) => {
+  localStorage.setItem("cartProduct", JSON.stringify(cartProduct));
+  localStorage.setItem("cartCombo", JSON.stringify(cartCombo));
   localStorage.setItem("totalAmount", JSON.stringify(totalAmount));
   localStorage.setItem("totalQuantity", JSON.stringify(totalQuantity));
 };
 
 const initialState = {
-  cartItems: items,
+  cartProduct: cartProduct,
+  cartCombo: cartCombo,
   totalQuantity: totalQuantity,
   totalAmount: totalAmount,
 };
+
+const checkIsCombo = (state, isCombo) => {
+  if (isCombo) {
+    return state.cartCombo
+  }
+  return state.cartProduct
+}
+
+const updateState = (state) => {
+  state.totalAmount = state.cartCombo.reduce(
+    (total, item) => total + Number(item.price) * Number(item.quantity),
+    0
+  ) + state.cartProduct.reduce(
+    (total, item) => total + Number(item.price) * Number(item.quantity),
+    0
+  );
+
+  setItemFunc(
+    state.cartProduct.map((item) => item),
+    state.cartCombo.map((item) => item),
+    state.totalAmount,
+    state.totalQuantity
+  );
+}
 
 const cartSlice = createSlice({
   name: "cart",
@@ -35,15 +73,15 @@ const cartSlice = createSlice({
     // =========== add item ============
     addItem(state, action) {
       const newItem = action.payload;
-      const existingItem = state.cartItems.find(
+      const tempState = checkIsCombo(state, action.payload.isCombo)
+      const existingItem = tempState.find(
         (item) => item.id === newItem.id
       );
       state.totalQuantity++;
 
       if (!existingItem) {
         // ===== note: if you use just redux you should not mute state array instead of clone the state array, but if you use redux toolkit that will not a problem because redux toolkit clone the array behind the scene
-
-        state.cartItems.push({
+        tempState.push({
           id: newItem.id,
           name: newItem.name,
           images: newItem.images,
@@ -56,66 +94,49 @@ const cartSlice = createSlice({
         existingItem.totalPrice =
           Number(existingItem.totalPrice) + Number(newItem.price);
       }
-
-      state.totalAmount = state.cartItems.reduce(
-        (total, item) => total + Number(item.price) * Number(item.quantity),
-        0
-      );
-
-      setItemFunc(
-        state.cartItems.map((item) => item),
-        state.totalAmount,
-        state.totalQuantity
-      );
+      updateState(state)
     },
 
     // ========= remove item ========
-
     removeItem(state, action) {
-      const id = action.payload;
-      const existingItem = state.cartItems.find((item) => item.id === id);
+      
+      const id = action.payload.id;
+      var tempState = checkIsCombo(state, action.payload.isCombo)
+      const existingItem = tempState.find((item) => item.id === id);
       state.totalQuantity--;
 
       if (existingItem.quantity === 1) {
-        state.cartItems = state.cartItems.filter((item) => item.id !== id);
+        if(action.payload.isCombo) {
+          state.cartCombo = state.cartCombo.filter((item) => item.id !== id);
+        }
+        else {
+          state.cartProduct = state.cartProduct.filter((item) => item.id !== id);
+        }
       } else {
         existingItem.quantity--;
         existingItem.totalPrice =
           Number(existingItem.totalPrice) - Number(existingItem.price);
       }
-
-      state.totalAmount = state.cartItems.reduce(
-        (total, item) => total + Number(item.price) * Number(item.quantity),
-        0
-      );
-
-      setItemFunc(
-        state.cartItems.map((item) => item),
-        state.totalAmount,
-        state.totalQuantity
-      );
+      updateState(state)
     },
 
     //============ delete item ===========
 
     deleteItem(state, action) {
-      const id = action.payload;
-      const existingItem = state.cartItems.find((item) => item.id === id);
+      const id = action.payload.id;
+      var tempState = checkIsCombo(state, action.payload.isCombo)
+      const existingItem = tempState.find((item) => item.id === id);
 
       if (existingItem) {
-        state.cartItems = state.cartItems.filter((item) => item.id !== id);
+        if(action.payload.isCombo) {
+          state.cartCombo = state.cartCombo.filter((item) => item.id !== id);
+        }
+        else {
+          state.cartProduct = state.cartProduct.filter((item) => item.id !== id);
+        }
         state.totalQuantity = state.totalQuantity - existingItem.quantity;
       }
-
-      state.totalAmount = state.cartItems.reduce(
-        (total, item) => total + Number(item.price) * Number(item.quantity),
-        0
-      );
-      setItemFunc(
-        state.cartItems.map((item) => item),
-        state.totalAmount,
-        state.totalQuantity
-      );
+      updateState(state)
     },
   },
 });

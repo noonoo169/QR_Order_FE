@@ -6,7 +6,7 @@ import "../../../styles/cart-item.css";
 import { useDispatch } from "react-redux";
 import { cartActions } from "../../../store/shopping-cart/cartSlice";
 
-const CartItem = ({ item }) => {
+const CartItem = ({ item, isCombo }) => {
   const { id, name, price, description, images, quantity, totalPrice } = item;
 
   const dispatch = useDispatch();
@@ -14,17 +14,17 @@ const CartItem = ({ item }) => {
   const incrementItem = () => {
     dispatch(
       cartActions.addItem({
-        id, name, price, description, images
+        id, name, price, description, images, isCombo
       })
     );
   };
 
   const decreaseItem = () => {
-    dispatch(cartActions.removeItem(id));
+    dispatch(cartActions.removeItem({id, isCombo}));
   };
 
   const deleteItem = () => {
-    dispatch(cartActions.deleteItem(id));
+    dispatch(cartActions.deleteItem({id, isCombo}));
   };
 
   return (

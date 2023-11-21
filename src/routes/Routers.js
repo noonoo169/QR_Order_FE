@@ -9,16 +9,18 @@ import Checkout from "../pages/Checkout";
 import Contact from "../pages/Contact";
 import Login from "../pages/Login";
 import Register from "../pages/Register";
+import ProtectedRoute from "../components/AuthTable/ProtectedRoute";
+import Order from "../pages/Order";
 
 const Routers = () => {
   return (
     <Routes>
       <Route path="/" element={<Navigate to="/home" />} />
-      <Route path="/home" element={<Home />} />
-      <Route path="/foods" element={<AllFoods />} />
-      <Route path="/foods/:id" element={<FoodDetails />} />
-      <Route path="/cart" element={<Cart />} />
-      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/home/:table_id" element={<Home />} />
+      <Route path="/foods" element={<ProtectedRoute> <AllFoods /> </ProtectedRoute>} />
+      <Route path="/foods/:id" element={<ProtectedRoute> <FoodDetails /> </ProtectedRoute>} />
+      <Route path="/order" element={< ProtectedRoute><Order /> </ProtectedRoute>} />
+      <Route path="/checkout" element={<ProtectedRoute> <Checkout /> </ProtectedRoute>} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/contact" element={<Contact />} />

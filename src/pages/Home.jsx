@@ -1,4 +1,5 @@
-import React from "react";
+import React , {useEffect, useState}from "react";
+import { useParams, useNavigate  } from "react-router-dom";
 
 import Helmet from "../components/Helmet/Helmet.js";
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
@@ -21,6 +22,7 @@ import whyImg from "../assets/images/location.png";
 import networkImg from "../assets/images/network.png";
 
 import TestimonialSlider from "../components/UI/slider/TestimonialSlider.jsx";
+import axios from "axios"
 
 const featureData = [
   {
@@ -42,186 +44,223 @@ const featureData = [
 ];
 
 const Home = () => {
+  const navigate = useNavigate();
+  const {table_id} = useParams();
+  const [isEmptyTable, setIsEmptyTable] = useState(true)
 
+  useEffect(() => {
+    const getTable = async () => {
+      try {
+        if ( sessionStorage.getItem('table_id') !== table_id || !sessionStorage.getItem('table_id')) {
+          const responseTable = await axios.get(
+            `${process.env.REACT_APP_BE_URL}/api/table/${table_id}`
+          );  
+          if (responseTable.status >= 200 && responseTable.status < 300) {
+            const table = responseTable.data
+            if (table.status === 'EMPTY') {
+              sessionStorage.setItem('table_id', table_id)
+            }
+  
+            // if (table.status == 'EMPTY') {
+            // }
+            // else {
+            //   if (sessionStorage.getItem('table_id') === null) {
+            //     sessionStorage.setItem('table_id', table_id)
+            //   }
+            //   console.log('table_id', table_id)
+  
+            // }
+          } else {
+          }
+        }
+
+        
+      } catch (err) {
+      } 
+    };
+    getTable();
+  }, [table_id]);
+  
   return (
     <Helmet title="Home">
-      <section>
-        <Container>
-          <Row>
-            <Col lg="6" md="6">
-              <div className="hero__content  ">
-                <h5 className="mb-3">Easy way to make an order</h5>
-                <h1 className="mb-4 hero__title">
-                  <span>HUNGRY?</span> Just wait <br /> food at
-                  <span> your door</span>
-                </h1>
+        <section>
+          <Container>
+            <Row>
+              <Col lg="6" md="6">
+                <div className="hero__content  ">
+                  <h5 className="mb-3">Easy way to make an order</h5>
+                  <h1 className="mb-4 hero__title">
+                    <span>HUNGRY?</span> Just wait <br /> food at
+                    <span> your door</span>
+                  </h1>
 
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
-                  magni delectus tenetur autem, sint veritatis!
-                </p>
-
-                <div className="hero__btns d-flex align-items-center gap-5 mt-4">
-                  <button className="order__btn d-flex align-items-center justify-content-between">
-                    Order now <i class="ri-arrow-right-s-line"></i>
-                  </button>
-
-                  <button className="all__foods-btn">
-                    <Link to="/foods">See all foods</Link>
-                  </button>
-                </div>
-
-                <div className=" hero__service  d-flex align-items-center gap-5 mt-5 ">
-                  <p className=" d-flex align-items-center gap-2 ">
-                    <span className="shipping__icon">
-                      <i class="ri-car-line"></i>
-                    </span>{" "}
-                    No shipping charge
+                  <p>
+                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Qui
+                    magni delectus tenetur autem, sint veritatis!
                   </p>
 
-                  <p className=" d-flex align-items-center gap-2 ">
-                    <span className="shipping__icon">
-                      <i class="ri-shield-check-line"></i>
-                    </span>{" "}
-                    100% secure checkout
-                  </p>
-                </div>
-              </div>
-            </Col>
+                  <div className="hero__btns d-flex align-items-center gap-5 mt-4">
+                    <button className="order__btn d-flex align-items-center justify-content-between">
+                      Order now <i class="ri-arrow-right-s-line"></i>
+                    </button>
 
-            <Col lg="6" md="6">
-              <div className="hero__img">
-                <img src={heroImg} alt="hero-img" className="w-100" />
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+                    <button className="all__foods-btn">
+                      <Link to="/foods">See all foods</Link>
+                    </button>
+                  </div>
 
-      <section className="pt-0">
-        <Category />
-      </section>
+                  <div className=" hero__service  d-flex align-items-center gap-5 mt-5 ">
+                    <p className=" d-flex align-items-center gap-2 ">
+                      <span className="shipping__icon">
+                        <i class="ri-car-line"></i>
+                      </span>{" "}
+                      No shipping charge
+                    </p>
 
-      <section>
-        <Container>
-          <Row>
-            <Col lg="12" className="text-center">
-              <h5 className="feature__subtitle mb-4">What we serve</h5>
-              <h2 className="feature__title">Just sit back at home</h2>
-              <h2 className="feature__title">
-                we will <span>take care</span>
-              </h2>
-              <p className="mb-1 mt-4 feature__text">
-                Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor,
-                officiis?
-              </p>
-              <p className="feature__text">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Aperiam, eius.{" "}
-              </p>
-            </Col>
-
-            {featureData.map((item, index) => (
-              <Col lg="4" md="6" sm="6" key={index} className="mt-5">
-                <div className="feature__item text-center px-5 py-3">
-                  <img
-                    src={item.imgUrl}
-                    alt="feature-img"
-                    className="w-25 mb-3"
-                  />
-                  <h5 className=" fw-bold mb-3">{item.title}</h5>
-                  <p>{item.desc}</p>
+                    <p className=" d-flex align-items-center gap-2 ">
+                      <span className="shipping__icon">
+                        <i class="ri-shield-check-line"></i>
+                      </span>{" "}
+                      100% secure checkout
+                    </p>
+                  </div>
                 </div>
               </Col>
-            ))}
-          </Row>
-        </Container>
-      </section>
 
-      <section className="why__choose-us">
-        <Container>
-          <Row>
-            <Col lg="6" md="6">
-              <img src={whyImg} alt="why-tasty-treat" className="w-100" />
-            </Col>
+              <Col lg="6" md="6">
+                <div className="hero__img">
+                  <img src={heroImg} alt="hero-img" className="w-100" />
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </section>
 
-            <Col lg="6" md="6">
-              <div className="why__tasty-treat">
-                <h2 className="tasty__treat-title mb-4">
-                  Why <span>Tasty Treat?</span>
+        <section className="pt-0">
+          <Category />
+        </section>
+
+        <section>
+          <Container>
+            <Row>
+              <Col lg="12" className="text-center">
+                <h5 className="feature__subtitle mb-4">What we serve</h5>
+                <h2 className="feature__title">Just sit back at home</h2>
+                <h2 className="feature__title">
+                  we will <span>take care</span>
                 </h2>
-                <p className="tasty__treat-desc">
+                <p className="mb-1 mt-4 feature__text">
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit. Dolor,
+                  officiis?
+                </p>
+                <p className="feature__text">
                   Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                  Dolorum, minus. Tempora reprehenderit a corporis velit,
-                  laboriosam vitae ullam, repellat illo sequi odio esse iste
-                  fugiat dolor, optio incidunt eligendi deleniti!
+                  Aperiam, eius.{" "}
                 </p>
+              </Col>
 
-                <ListGroup className="mt-4">
-                  <ListGroupItem className="border-0 ps-0">
-                    <p className=" choose__us-title d-flex align-items-center gap-2 ">
-                      <i class="ri-checkbox-circle-line"></i> Fresh and tasty
-                      foods
-                    </p>
-                    <p className="choose__us-desc">
-                      Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                      Quia, voluptatibus.
-                    </p>
-                  </ListGroupItem>
+              {featureData.map((item, index) => (
+                <Col lg="4" md="6" sm="6" key={index} className="mt-5">
+                  <div className="feature__item text-center px-5 py-3">
+                    <img
+                      src={item.imgUrl}
+                      alt="feature-img"
+                      className="w-25 mb-3"
+                    />
+                    <h5 className=" fw-bold mb-3">{item.title}</h5>
+                    <p>{item.desc}</p>
+                  </div>
+                </Col>
+              ))}
+            </Row>
+          </Container>
+        </section>
 
-                  <ListGroupItem className="border-0 ps-0">
-                    <p className="choose__us-title d-flex align-items-center gap-2 ">
-                      <i class="ri-checkbox-circle-line"></i> Quality support
-                    </p>
-                    <p className="choose__us-desc">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Qui, earum.
-                    </p>
-                  </ListGroupItem>
+        <section className="why__choose-us">
+          <Container>
+            <Row>
+              <Col lg="6" md="6">
+                <img src={whyImg} alt="why-tasty-treat" className="w-100" />
+              </Col>
 
-                  <ListGroupItem className="border-0 ps-0">
-                    <p className="choose__us-title d-flex align-items-center gap-2 ">
-                      <i class="ri-checkbox-circle-line"></i>Order from any
-                      location{" "}
-                    </p>
-                    <p className="choose__us-desc">
-                      Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                      Qui, earum.
-                    </p>
-                  </ListGroupItem>
-                </ListGroup>
-              </div>
-            </Col>
-          </Row>
-        </Container>
-      </section>
+              <Col lg="6" md="6">
+                <div className="why__tasty-treat">
+                  <h2 className="tasty__treat-title mb-4">
+                    Why <span>Tasty Treat?</span>
+                  </h2>
+                  <p className="tasty__treat-desc">
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Dolorum, minus. Tempora reprehenderit a corporis velit,
+                    laboriosam vitae ullam, repellat illo sequi odio esse iste
+                    fugiat dolor, optio incidunt eligendi deleniti!
+                  </p>
 
-      <section>
-        <Container>
-          <Row>
-            <Col lg="6" md="6">
-              <div className="testimonial ">
-                <h5 className="testimonial__subtitle mb-4">Testimonial</h5>
-                <h2 className="testimonial__title mb-4">
-                  What our <span>customers</span> are saying
-                </h2>
-                <p className="testimonial__desc">
-                  Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-                  Distinctio quasi qui minus quos sit perspiciatis inventore
-                  quis provident placeat fugiat!
-                </p>
+                  <ListGroup className="mt-4">
+                    <ListGroupItem className="border-0 ps-0">
+                      <p className=" choose__us-title d-flex align-items-center gap-2 ">
+                        <i class="ri-checkbox-circle-line"></i> Fresh and tasty
+                        foods
+                      </p>
+                      <p className="choose__us-desc">
+                        Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                        Quia, voluptatibus.
+                      </p>
+                    </ListGroupItem>
 
-                <TestimonialSlider />
-              </div>
-            </Col>
+                    <ListGroupItem className="border-0 ps-0">
+                      <p className="choose__us-title d-flex align-items-center gap-2 ">
+                        <i class="ri-checkbox-circle-line"></i> Quality support
+                      </p>
+                      <p className="choose__us-desc">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Qui, earum.
+                      </p>
+                    </ListGroupItem>
 
-            <Col lg="6" md="6">
-              <img src={networkImg} alt="testimonial-img" className="w-100" />
-            </Col>
-          </Row>
-        </Container>
-      </section>
+                    <ListGroupItem className="border-0 ps-0">
+                      <p className="choose__us-title d-flex align-items-center gap-2 ">
+                        <i class="ri-checkbox-circle-line"></i>Order from any
+                        location{" "}
+                      </p>
+                      <p className="choose__us-desc">
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                        Qui, earum.
+                      </p>
+                    </ListGroupItem>
+                  </ListGroup>
+                </div>
+              </Col>
+            </Row>
+          </Container>
+        </section>
+
+        <section>
+          <Container>
+            <Row>
+              <Col lg="6" md="6">
+                <div className="testimonial ">
+                  <h5 className="testimonial__subtitle mb-4">Testimonial</h5>
+                  <h2 className="testimonial__title mb-4">
+                    What our <span>customers</span> are saying
+                  </h2>
+                  <p className="testimonial__desc">
+                    Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+                    Distinctio quasi qui minus quos sit perspiciatis inventore
+                    quis provident placeat fugiat!
+                  </p>
+
+                  <TestimonialSlider />
+                </div>
+              </Col>
+
+              <Col lg="6" md="6">
+                <img src={networkImg} alt="testimonial-img" className="w-100" />
+              </Col>
+            </Row>
+          </Container>
+        </section>
     </Helmet>
+    
   );
 };
 

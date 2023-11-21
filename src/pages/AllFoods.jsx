@@ -18,46 +18,82 @@ const AllFoods = () => {
   const [categories, setCategories] = useState([]);
   const [pageCount, setPageCount] = useState(0);
   const [displayPage, setDisplayPage] = useState([]);
-
+  const [choosedCategory, setChoosedCategory] = useState("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const [isCombo, setIsCombo] = useState(false);
   let visitedPage = pageNumber * productPerPage;
+  console.log('app url', process.env.REACT_APP_BE_URL);
+  useEffect(() => {
+    const getCategories = async () => {
+      try {
+        const responseCategory = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/category`
+        );
+
+        if (responseCategory.status >= 200 && responseCategory.status < 300) {
+          setCategories(responseCategory.data);
+          setError('');
+        } else {
+          setError(responseCategory.status);
+        }
+      } catch (err) {
+        setError(err.message);
+        setCategories([]);
+      } 
+    };
+    getCategories();
+  }, []);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const responseProducts = await axios.get(
-          `http://localhost:8080/api/product`
-        );
-
-        const responseCategory = await axios.get(
-          `http://localhost:8080/api/category`
-        );
-
-        if (responseProducts.status >= 200 && responseProducts.status < 300 &&
-          responseCategory.status >= 200 && responseCategory.status < 300) {
-          setProduct(responseProducts.data);
-          setDisplayProduct(responseProducts.data);
-          setCategories(responseCategory.data);
+        let endpoint = ''
+        if (choosedCategory == 'ALL' ) {
+          endpoint = `${process.env.REACT_APP_BE_URL}/api/product`
+          setIsCombo(false)
+        }
+        else if (choosedCategory == 'COMBO' ) {
+          endpoint = `${process.env.REACT_APP_BE_URL}/api/combo/`
+          setIsCombo(true)
+        }
+        else  {
+          endpoint = `${process.env.REACT_APP_BE_URL}/api/product/?categoryName=${choosedCategory}`
+          setIsCombo(false)
+        }
+        const response = await axios.get(endpoint);
+        if (response.status >= 200 && response.status < 300) {
+          let data = response.data
+          if (data[0].hasOwnProperty('detailsProducts')) {
+            data = data.map(combo => ({
+              ...combo,
+              images: combo.detailsProducts.map(detail => (
+                detail.product.images[0]
+              ))
+            }))
+          }
+          setProduct(data);
+          setDisplayProduct(data);
           setError('');
         } else {
-          setError(responseProducts.status);
+          setError(response.status);
           setPageCount(0);
           setDisplayPage([]);
         }
       } catch (err) {
         setError(err.message);
         setPageCount(null);
-        setCategories([]);
         setProduct([]);
         setDisplayPage([]);
       } finally {
-        setIsLoading(false);
+        setTimeout(() => { 
+          setIsLoading(false);
+        }, 1000);
       }
     };
     getData();
-  }, []);
+  }, [choosedCategory]);
 
   const changePage = ({ selected }) => {
     setPageNumber(selected);
@@ -70,18 +106,8 @@ const AllFoods = () => {
     );
   };
 
-  const [choosedCategory, setChoosedCategory] = useState("ALL");
-
   const changeCategory = (categoryName) => {
     setChoosedCategory(categoryName);
-    if (categoryName === "ALL") {
-      setDisplayProduct(products);
-    }
-    else {
-      setDisplayProduct(products.filter(
-        (item) => item.category.name === categoryName
-      ))
-    }
   };
 
   const filterProduct = (productName) => {
@@ -147,6 +173,13 @@ const AllFoods = () => {
                       >
                         All
                       </button>
+                      <button
+                        className={`all__btn    ${choosedCategory === "COMBO" ? "foodBtnActive" : ""
+                          } `}
+                        onClick={() => changeCategory('COMBO')}
+                      >
+                        Combo
+                      </button>
                       {categories.map((category) => (
                         <button key={category.id}
                           className={`d-flex align-items-center gap-2 ${choosedCategory === category.name ? "foodBtnActive" : ""
@@ -160,7 +193,7 @@ const AllFoods = () => {
                   </Col>
                   {displayPage.map((item) => (
                     <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mb-4">
-                      <ProductCard item={item} />
+                      <ProductCard item={item} isCombo={isCombo} />
                     </Col>
                   ))}
                   <div>

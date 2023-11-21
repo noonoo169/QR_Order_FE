@@ -9,8 +9,10 @@ import { cartActions } from "../store/shopping-cart/cartSlice";
 import { Link } from "react-router-dom";
 
 const Cart = () => {
-  const cartItems = useSelector((state) => state.cart.cartItems);
+  const cartProducts = useSelector((state) => state.cart.cartProduct);
+  const cartCombos = useSelector((state) => state.cart.cartCombo);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
+  const orderHistory = localStorage.getItem('orderHistory')
   return (
     <Helmet title="Cart">
       <CommonSection title="Your Cart" />
@@ -18,7 +20,7 @@ const Cart = () => {
         <Container>
           <Row>
             <Col lg="12">
-              {cartItems.length === 0 ? (
+              {cartProducts.concat(cartCombos).length === 0 ? (
                 <h5 className="text-center">Your cart is empty</h5>
               ) : (
                 <table className="table table-bordered">
@@ -32,7 +34,7 @@ const Cart = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {cartItems.map((item) => (
+                    {cartProducts.concat(cartCombos).map((item) => (
                       <Tr item={item} key={item.id} />
                     ))}
                   </tbody>

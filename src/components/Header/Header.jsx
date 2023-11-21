@@ -19,8 +19,8 @@ const nav__links = [
     path: "/foods",
   },
   {
-    display: "Cart",
-    path: "/cart",
+    display: "Order",
+    path: "/order",
   },
   {
     display: "Contact",

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useLocation } from 'react-router-dom';
 import axios from "axios"
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -15,6 +16,9 @@ import "../styles/product-details.css";
 import ProductCard from "../components/UI/product-card/ProductCard";
 
 const FoodDetails = () => {
+  const location = useLocation();
+  const isCombo = location.state && location.state.isCombo // erro if user copy link and paste in new tab
+  // const isCombo = false
   const product_id = useParams();
   const [product, setProduct] = useState([]);
   const [relatedProduct, setRelatedProduct] = useState([]);
@@ -26,13 +30,13 @@ const FoodDetails = () => {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    const getData = async () => {
+    const getProduct = async () => {
       try {
         const responseProductDetail = await axios.get(
-          `http://localhost:8080/api/product/${product_id.id}`
+          `${process.env.REACT_APP_BE_URL}/api/product/${product_id.id}`
         );
         const responseComments = await axios.get(
-          'http://localhost:8080/api/comment/', {
+          `${process.env.REACT_APP_BE_URL}/api/comment/`, {
           params: {
             productId: product_id.id,
           },
@@ -42,7 +46,7 @@ const FoodDetails = () => {
           setProduct(responseProductDetail.data);
           setPreviewImg(responseProductDetail.data.images[0].imageUrl)
           setComments(responseComments.data ? responseComments.data : [])
-          const responseProductsByCategory = await axios.get('http://localhost:8080/api/product/', {
+          const responseProductsByCategory = await axios.get(`${process.env.REACT_APP_BE_URL}/api/product/`, {
             params: {
               categoryName: responseProductDetail.data.category.name,
             },
@@ -69,8 +73,37 @@ const FoodDetails = () => {
       } finally {
         setIsLoading(false);
       }
+    }
+
+    const getCombo = async () => {
+      try {
+        const responseCombo = await axios.get(
+          `${process.env.REACT_APP_BE_URL}/api/combo/${product_id.id}`
+        );
+        if (responseCombo.status >= 200 && responseCombo.status < 300) {
+          let combo = responseCombo.data
+          combo = { ...combo,
+            images: combo.detailsProducts.map(detail => (
+              detail.product.images[0]
+            ))
+          }
+          setProduct(combo);
+          setPreviewImg(combo.images[0].imageUrl)
+        } else {
+          setError(responseCombo.status);
+          setProduct([]);
+          setRelatedProduct([]);
+        }
+      } catch (err) {
+        setError(err.message);
+        setProduct([]);
+        setRelatedProduct([]);
+      } finally {
+        setIsLoading(false);
+      }
     };
-    getData();
+
+    isCombo ? getCombo() : getProduct()
   }, [product_id]);
 
   const { id, name, price, description, images = [], category = [] } = product;
@@ -78,7 +111,7 @@ const FoodDetails = () => {
   const addItem = () => {
     dispatch(
       cartActions.addItem({
-        id, name, price, description, images
+        id, name, price, description, images, isCombo
       })
     );
   };
