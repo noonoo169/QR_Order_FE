@@ -1,12 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-
-
-const orderHistory = 
-  sessionStorage.getItem('orderHistory') !== null 
-  ? JSON.parse(sessionStorage.getItem("orderHistory"))
-  : [];
-
 const cartProduct =
   localStorage.getItem("cartProduct") !== null
     ? JSON.parse(localStorage.getItem("cartProduct"))

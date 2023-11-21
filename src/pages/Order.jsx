@@ -1,24 +1,17 @@
-import React, { useState, useEffect } from "react";
-
+import React, { useState, useEffect } from "react"; 
 import CommonSection from "../components/UI/common-section/CommonSection";
 import Helmet from "../components/Helmet/Helmet";
 import "../styles/cart-page.css";
-import { useSelector, useDispatch } from "react-redux";
 import { Container, Row, Col } from "reactstrap";
-import { cartActions } from "../store/shopping-cart/cartSlice";
-import { Link } from "react-router-dom";
 import "../styles/order.css"
 import axios from "axios";
 import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
-import Snackbar from '@mui/material/Snackbar';
-import Alert from '@mui/material/Alert';
-import Stack from '@mui/material/Stack';
+import CallStaff from "../components/UI/call-staff/CallStaff";
 const Order = () => {
   const orderId = JSON.parse(sessionStorage.getItem('orderId'))
   const [order, setOrder] = useState({});
   const [error, setError] = useState('')
-  const [open, setOpen] = useState(false);
   
   useEffect(() => {
     const getOrder = async () => {
@@ -45,7 +38,6 @@ const Order = () => {
                 return { name: detail.name, quantity: quantity, price: price }
               })
           }
-          console.log('order:', data);
           setOrder(data)
           setError('');
         } else {
@@ -57,17 +49,12 @@ const Order = () => {
       }
     };
     if (orderId !== null) {
+      console.log("log");
       getOrder();
     }
-  }, []);
+  }, [orderId]);
 
-  const handleClick = () => {
-    setOpen(true);
-  };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
 
   return (
     <Helmet title="Order">
@@ -126,16 +113,8 @@ const Order = () => {
                         <Button className="btn d-flex mx-auto" variant="outlined" color="success" href="/foods">
                           Add food
                         </Button>
-                        <Button className="btn d-flex mx-auto" variant="outlined" color="success" onClick={handleClick}>
-                          Call staff
-                        </Button>
+                        <CallStaff/>
                       </ButtonGroup>
-                      <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-                            <Alert onClose={handleClose} severity="success" sx={{ width: '100%' }}>
-                              Staff is comming
-                            </Alert>
-                          </Snackbar>
-                      {/* <button class="btn d-flex mx-auto"> Track your order </button> */}
                     </div>
                   </div>
                 </div>

@@ -24,7 +24,6 @@ const AllFoods = () => {
 
   const [isCombo, setIsCombo] = useState(false);
   let visitedPage = pageNumber * productPerPage;
-  console.log('app url', process.env.REACT_APP_BE_URL);
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -50,11 +49,11 @@ const AllFoods = () => {
     const getData = async () => {
       try {
         let endpoint = ''
-        if (choosedCategory == 'ALL' ) {
+        if (choosedCategory === 'ALL' ) {
           endpoint = `${process.env.REACT_APP_BE_URL}/api/product`
           setIsCombo(false)
         }
-        else if (choosedCategory == 'COMBO' ) {
+        else if (choosedCategory === 'COMBO' ) {
           endpoint = `${process.env.REACT_APP_BE_URL}/api/combo/`
           setIsCombo(true)
         }

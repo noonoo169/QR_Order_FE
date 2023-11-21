@@ -1,5 +1,5 @@
-import React , {useEffect, useState}from "react";
-import { useParams, useNavigate  } from "react-router-dom";
+import React , {useEffect} from "react";
+import { useParams  } from "react-router-dom";
 
 import Helmet from "../components/Helmet/Helmet.js";
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
@@ -42,11 +42,9 @@ const featureData = [
     desc: "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Minus, doloremque.",
   },
 ];
-
+  
 const Home = () => {
-  const navigate = useNavigate();
   const {table_id} = useParams();
-  const [isEmptyTable, setIsEmptyTable] = useState(true)
 
   useEffect(() => {
     const getTable = async () => {

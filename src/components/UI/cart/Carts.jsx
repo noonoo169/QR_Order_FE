@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 
 import { ListGroup } from "reactstrap";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import CartItem from "./CartItem";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -30,7 +30,6 @@ const Carts = () => {
     }
     else {
       try {
-        toggleCart()
         const orderData = {
           "tableId": sessionStorage.getItem('table_id'),
           "totalPrice": totalAmount,
@@ -56,6 +55,7 @@ const Carts = () => {
         if (responseOrder.status >= 200 && responseOrder.status < 300) {
           const responseOrderData = responseOrder.data
           if (responseOrderData !== "This table is UNEMPTY") {
+            toggleCart()
             sessionStorage.setItem('orderId', JSON.stringify(responseOrderData.id))
             cartProducts.map((product) => (
               dispatch(cartActions.deleteItem({ id: product.id, isCombo: false }))
@@ -83,33 +83,30 @@ const Carts = () => {
     }
     else {
       try {
-        toggleCart()
-        const orderData = {
-          "tableId": sessionStorage.getItem('table_id'),
-          "totalPrice": totalAmount,
-          "note": null,
-          "orderDetails":
-            cartProducts.map((product) => (
+        const orderId = JSON.parse(sessionStorage.getItem('orderId'))
+        const newFoodsData = 
+          cartProducts.map((product) => (
+            {
+              productId: product.id,
+              quantity: product.quantity
+            }
+          )).concat(
+            cartCombos.map((combo) => (
               {
-                productId: product.id,
-                quantity: product.quantity
+                comboId: combo.id,
+                quantity: combo.quantity
               }
-            )).concat(
-              cartCombos.map((combo) => (
-                {
-                  comboId: combo.id,
-                  quantity: combo.quantity
-                }
-              ))
-            )
-        };
-        const responseOrder = await axios.post(
-          `${process.env.REACT_APP_BE_URL}/api/order/addOfflineOrder`, orderData
+            ))
+          )
+        
+        const responseAddFoodToExistOrder = await axios.post(
+          `${process.env.REACT_APP_BE_URL}/api/order/addOrderOfflineDetails/${orderId}`, newFoodsData
         );
-        if (responseOrder.status >= 200 && responseOrder.status < 300) {
-          const responseOrderData = responseOrder.data
-          if (responseOrderData !== "This table is UNEMPTY") {
-            sessionStorage.setItem('orderId', JSON.stringify(responseOrderData.id))
+        if (responseAddFoodToExistOrder.status >= 200 && responseAddFoodToExistOrder.status < 300) {
+          const responseAddFoodToExistOrderData = responseAddFoodToExistOrder.data
+          if (responseAddFoodToExistOrderData !== "This order is not existed") {
+            toggleCart()
+            // sessionStorage.setItem('orderId', JSON.stringify(responseAddFoodToExistOrderData.id))
             cartProducts.map((product) => (
               dispatch(cartActions.deleteItem({ id: product.id, isCombo: false }))
             ))
@@ -119,7 +116,7 @@ const Carts = () => {
             navigate('/order')
           }
         } else {
-          setErrorMessage('Cannot order right now')
+          setErrorMessage('Your order is not exist')
           setOpen(true)
         }
       } catch (error) {

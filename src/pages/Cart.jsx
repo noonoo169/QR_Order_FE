@@ -12,7 +12,6 @@ const Cart = () => {
   const cartProducts = useSelector((state) => state.cart.cartProduct);
   const cartCombos = useSelector((state) => state.cart.cartCombo);
   const totalAmount = useSelector((state) => state.cart.totalAmount);
-  const orderHistory = localStorage.getItem('orderHistory')
   return (
     <Helmet title="Cart">
       <CommonSection title="Your Cart" />

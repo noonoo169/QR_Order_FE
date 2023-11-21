@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { cartUiActions } from "../../store/shopping-cart/cartUiSlice";
 
 import "../../styles/header.css";
+import CallStaff from "../UI/call-staff/CallStaff";
 
 const nav__links = [
   {
@@ -78,6 +79,7 @@ const Header = () => {
                   {item.display}
                 </NavLink>
               ))}
+                <CallStaff/>
             </div>
           </div>
 

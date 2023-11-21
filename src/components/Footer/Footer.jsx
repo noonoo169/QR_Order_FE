@@ -41,10 +41,10 @@ const Footer = () => {
             <h5 className="footer__title">Contact</h5>
             <ListGroup className="deliver__time-list">
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <p>Location: ZindaBazar, Sylhet-3100, Bangladesh</p>
+                <p>Location: 54 Nguyễn Lương Bằng</p>
               </ListGroupItem>
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
-                <span>Phone: 01712345678</span>
+                <span>Phone: 03712345678</span>
               </ListGroupItem>
 
               <ListGroupItem className=" delivery__time-item border-0 ps-0">
@@ -68,7 +68,7 @@ const Footer = () => {
         <Row className="mt-5">
           <Col lg="6" md="6">
             <p className="copyright__text">
-              Copyright - 2022, website made by Muhibur Rahman. All Rights
+              Copyright - 2023, website made by QR_ORDER_TEAM. All Rights
               Reserved.
             </p>
           </Col>
@@ -77,29 +77,29 @@ const Footer = () => {
               <p className="m-0">Follow: </p>
               <span>
                 {" "}
-                <Link to="https://www.facebook.com/muhib160">
+                <a href="https://www.facebook.com/noonoo02" target="_blank" rel="noopener noreferrer">
                   <i class="ri-facebook-line"></i>
-                </Link>{" "}
+                </a>{" "}
               </span>
 
               <span>
-                <Link to="https://github.com/muhib160">
+                <a href="https://github.com/noonoo169/QR_Order_FE" target="_blank" rel="noopener noreferrer">
                   <i class="ri-github-line"></i>
-                </Link>
+                </a>
               </span>
 
               <span>
                 {" "}
-                <Link to=" https://www.youtube.com/c/MuhibsTechDiary">
+                <a href="https://www.youtube.com" target="_blank" rel="noopener noreferrer">
                   <i class="ri-youtube-line"></i>
-                </Link>{" "}
+                </a>{" "}
               </span>
 
               <span>
                 {" "}
-                <Link to=" https://www.linkedin.com/in/muhib160/">
+                <a href=" https://www.aedin.com/in/muhib160/" target="_blank" rel="noopener noreferrer">
                   <i class="ri-linkedin-line"></i>
-                </Link>{" "}
+                </a>{" "}
               </span>
             </div>
           </Col>
