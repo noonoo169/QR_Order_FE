@@ -124,7 +124,7 @@
   }
 
   .food__category button:first-child {
-    margin-left: 50%; /* Add margin to the left of the first button */
+    margin-left: 100%; /* Add margin to the left of the first button */
   }
 
   .tasty__treat-desc {

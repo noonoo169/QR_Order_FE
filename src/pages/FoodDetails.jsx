@@ -14,7 +14,8 @@ import { cartActions } from "../store/shopping-cart/cartSlice";
 import "../styles/product-details.css";
 
 import ProductCard from "../components/UI/product-card/ProductCard";
-
+import Snackbar from '@mui/material/Snackbar';
+import Alert from '@mui/material/Alert';
 const FoodDetails = () => {
   const location = useLocation();
   const isCombo = location.state && location.state.isCombo // erro if user copy link and paste in new tab
@@ -28,6 +29,8 @@ const FoodDetails = () => {
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [open, setOpen] = useState(false);
+
 
   useEffect(() => {
     const getProduct = async () => {
@@ -108,7 +111,12 @@ const FoodDetails = () => {
 
   const { id, name, price, description, images = [], category = [] } = product;
   const dispatch = useDispatch();
+  const handleClose = () => {
+    setOpen(false);
+  };
+
   const addItem = () => {
+    setOpen(true)
     dispatch(
       cartActions.addItem({
         id, name, price, description, images, isCombo
@@ -125,6 +133,11 @@ const FoodDetails = () => {
       <CommonSection title={name} />
 
       <section>
+        <Snackbar  open={open} autoHideDuration={1000} onClose={handleClose}>
+          <Alert onClose={handleClose} severity="success" sx={{ width: '100%', margin: '20px' }}>
+            Product added successfully
+          </Alert>
+        </Snackbar>
         <Container>
           {error ? (
             <div>Error occurred: {error}</div>
@@ -137,10 +150,10 @@ const FoodDetails = () => {
                   {
                     images.map((image) => (
                       <div key={image.id}
-                        className="img__item mb-3"
+                        className="img__item mb-3 mx-2"
                         onClick={() => setPreviewImg(image.imageUrl)}
                       >
-                        <img src={image.imageUrl} alt="" className="w-50" />
+                        <img src={image.imageUrl} alt="" className="product_custom_img" />
                       </div>
                     ))
                   }
@@ -149,7 +162,7 @@ const FoodDetails = () => {
 
               <Col lg="4" md="4">
                 <div className="product__main-img">
-                  <img src={previewImg} alt="" className="w-100" />
+                  <img src={previewImg} alt="" style={{ width: '100%', height: '300px' }} />
                 </div>
               </Col>
 

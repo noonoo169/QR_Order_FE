@@ -91,6 +91,12 @@
 .img__item {
   cursor: pointer;
 }
+
+.product_custom_img {
+  width: 100px;
+  height: 100px;
+}
+
 .related__Product-title {
   font-size: 1.4rem;
 }

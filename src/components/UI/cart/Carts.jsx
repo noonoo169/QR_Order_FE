@@ -32,7 +32,6 @@ const Carts = () => {
       try {
         const orderData = {
           "tableId": sessionStorage.getItem('table_id'),
-          "totalPrice": totalAmount,
           "note": null,
           "orderDetails":
             cartProducts.map((product) => (

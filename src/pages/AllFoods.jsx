@@ -21,7 +21,7 @@ const AllFoods = () => {
   const [choosedCategory, setChoosedCategory] = useState("ALL");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
-
+  // const [visitedPage, setVisitedPage] = useState
   const [isCombo, setIsCombo] = useState(false);
   let visitedPage = pageNumber * productPerPage;
   useEffect(() => {
@@ -40,7 +40,7 @@ const AllFoods = () => {
       } catch (err) {
         setError(err.message);
         setCategories([]);
-      } 
+      }
     };
     getCategories();
   }, []);
@@ -49,32 +49,42 @@ const AllFoods = () => {
     const getData = async () => {
       try {
         let endpoint = ''
-        if (choosedCategory === 'ALL' ) {
+        if (choosedCategory === 'ALL') {
           endpoint = `${process.env.REACT_APP_BE_URL}/api/product`
           setIsCombo(false)
         }
-        else if (choosedCategory === 'COMBO' ) {
+        else if (choosedCategory === 'COMBO') {
           endpoint = `${process.env.REACT_APP_BE_URL}/api/combo/`
           setIsCombo(true)
         }
-        else  {
+        else {
           endpoint = `${process.env.REACT_APP_BE_URL}/api/product/?categoryName=${choosedCategory}`
           setIsCombo(false)
         }
         const response = await axios.get(endpoint);
         if (response.status >= 200 && response.status < 300) {
+          // console.log('respone: ', response)
           let data = response.data
-          if (data[0].hasOwnProperty('detailsProducts')) {
-            data = data.map(combo => ({
-              ...combo,
-              images: combo.detailsProducts.map(detail => (
-                detail.product.images[0]
-              ))
-            }))
+          if (data.length > 0) {
+            if (data[0].hasOwnProperty('detailsProducts')) {
+              // console.log('dataCombo:', data);
+              data = data.map(combo => ({
+                ...combo,
+                images: combo.detailsProducts.map(detail => (
+                  detail.product.images[0]
+                ))
+              }))
+            }
+            visitedPage = 0
+            setProduct(data);
+            setDisplayProduct(data);
+            setError('');
           }
-          setProduct(data);
-          setDisplayProduct(data);
-          setError('');
+          else {
+            setProduct([]);
+            setDisplayProduct([]);
+            setError('');
+          }
         } else {
           setError(response.status);
           setPageCount(0);
@@ -86,7 +96,7 @@ const AllFoods = () => {
         setProduct([]);
         setDisplayPage([]);
       } finally {
-        setTimeout(() => { 
+        setTimeout(() => {
           setIsLoading(false);
         }, 1000);
       }
@@ -95,6 +105,7 @@ const AllFoods = () => {
   }, [choosedCategory]);
 
   const changePage = ({ selected }) => {
+    console.log('select', {selected})
     setPageNumber(selected);
     visitedPage = selected * productPerPage;
     setDisplayPage(
@@ -135,77 +146,78 @@ const AllFoods = () => {
             error ? (
               <div>Error occurred: {error}</div>
             ) : isLoading ? (
-                  <CircularProgress />
-              ) : (
-                <Row>
-                  <Col lg="6" md="6" sm="6" xs="12">
-                    <div className="search__widget d-flex align-items-center justify-content-between ">
-                      <input
-                        type="text"
-                        placeholder="I'm looking for...."
-                        onChange={(e) => filterProduct(e.target.value)}
-                        style={{ width: '100%', background: 'none' }}
-                      />
-                      <span>
-                        <i class="ri-search-line"></i>
-                      </span>
-                    </div>
-                  </Col>
-                  <Col lg="6" md="6" sm="6" xs="12" className="mb-5">
-                    <div className="sorting__widget text-end">
-                      <select className="w-50">
-                        <option>Default</option>
-                        <option value="ascending">Alphabetically, A-Z</option>
-                        <option value="descending">Alphabetically, Z-A</option>
-                        <option value="high-price">High Price</option>
-                        <option value="low-price">Low Price</option>
-                      </select>
-                    </div>
-                  </Col>
-
-                  <Col lg="12">
-                    <div className="food__category d-flex align-items-center justify-content-center gap-2">
-                      <button
-                        className={`all__btn    ${choosedCategory === "ALL" ? "foodBtnActive" : ""
-                          } `}
-                        onClick={() => changeCategory('ALL')}
-                      >
-                        All
-                      </button>
-                      <button
-                        className={`all__btn    ${choosedCategory === "COMBO" ? "foodBtnActive" : ""
-                          } `}
-                        onClick={() => changeCategory('COMBO')}
-                      >
-                        Combo
-                      </button>
-                      {categories.map((category) => (
-                        <button key={category.id}
-                          className={`d-flex align-items-center gap-2 ${choosedCategory === category.name ? "foodBtnActive" : ""
-                            } `}
-                          onClick={() => changeCategory(category.name)}
-                        >
-                          {category.name}
-                        </button>
-                      ))}
-                    </div>
-                  </Col>
-                  {displayPage.map((item) => (
-                    <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mb-4">
-                      <ProductCard item={item} isCombo={isCombo} />
-                    </Col>
-                  ))}
-                  <div>
-                    <ReactPaginate
-                      pageCount={pageCount}
-                      onPageChange={changePage}
-                      previousLabel={"Prev"}
-                      nextLabel={"Next"}
-                      containerClassName=" paginationBttns "
+              <CircularProgress />
+            ) : (
+              <Row>
+                <Col lg="6" md="6" sm="6" xs="12">
+                  <div className="search__widget d-flex align-items-center justify-content-between ">
+                    <input
+                      type="text"
+                      placeholder="I'm looking for...."
+                      onChange={(e) => filterProduct(e.target.value)}
+                      style={{ width: '100%', background: 'none' }}
                     />
+                    <span>
+                      <i class="ri-search-line"></i>
+                    </span>
                   </div>
-                </Row>
-              )
+                </Col>
+                <Col lg="6" md="6" sm="6" xs="12" className="mb-5">
+                  <div className="sorting__widget text-end">
+                    <select className="w-50">
+                      <option>Default</option>
+                      <option value="ascending">Alphabetically, A-Z</option>
+                      <option value="descending">Alphabetically, Z-A</option>
+                      <option value="high-price">High Price</option>
+                      <option value="low-price">Low Price</option>
+                    </select>
+                  </div>
+                </Col>
+
+                <Col lg="12">
+                  <div className="food__category d-flex align-items-center justify-content-center gap-2">
+                    <button
+                      className={`all__btn    ${choosedCategory === "ALL" ? "foodBtnActive" : ""
+                        } `}
+                      onClick={() => changeCategory('ALL')}
+                    >
+                      All
+                    </button>
+                    <button
+                      className={`    ${choosedCategory === "COMBO" ? "foodBtnActive" : ""
+                        } `}
+                      onClick={() => changeCategory('COMBO')}
+                    >
+                      Combo
+                    </button>
+                    {categories.map((category) => (
+                      <button key={category.id}
+                        className={`d-flex align-items-center gap-2 ${choosedCategory === category.name ? "foodBtnActive" : ""
+                          } `}
+                        onClick={() => changeCategory(category.name)}
+                      >
+                        {category.name}
+                      </button>
+                    ))}
+                  </div>
+                </Col>
+                {displayPage.map((item) => (
+                  <Col lg="3" md="4" sm="6" xs="6" key={item.id} className="mb-4">
+                    <ProductCard item={item} isCombo={isCombo} />
+                  </Col>
+                ))}
+                <div>
+                  <ReactPaginate
+                    pageCount={pageCount}
+                    onPageChange={changePage}
+                    previousLabel={"Prev"}
+                    nextLabel={"Next"}
+                    containerClassName=" paginationBttns "
+                    activeClassName="active"
+                  />
+                </div>
+              </Row>
+            )
           }
         </Container>
       </section>

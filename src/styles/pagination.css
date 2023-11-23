@@ -25,3 +25,10 @@
 .paginationBttns a:hover {
   background: #df2020;
 }
+
+.active a {
+  /* Styles for the active page */
+  background-color: #df2020; /* Change background color for the active page */
+  color: white; /* Change text color for the active page */
+  /* Add any other styles for the active page */
+}

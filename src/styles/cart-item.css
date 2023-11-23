@@ -20,6 +20,7 @@
 }
 
 .increase__decrease-btn {
+  width: 100px;
   background: #fde4e4;
   padding: 2px 5px;
   border-radius: 5px;

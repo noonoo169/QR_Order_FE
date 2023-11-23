@@ -36,7 +36,7 @@ const ProductCard = (props) => {
         </Alert>
       </Snackbar>
       <div className="product__img">
-        <img src={images[0].imageUrl} alt="product-img" className="w-50" />
+        <img src={images[0].imageUrl} alt="product-img" className="product_custom_img" />
       </div>
 
       <div className="product__content">
