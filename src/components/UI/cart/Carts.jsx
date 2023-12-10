@@ -31,7 +31,7 @@ const Carts = () => {
     else {
       try {
         const orderData = {
-          "tableId": sessionStorage.getItem('table_id'),
+          "tableId": localStorage.getItem('table_id'),
           "note": null,
           "orderDetails":
             cartProducts.map((product) => (
