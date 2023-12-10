@@ -49,14 +49,14 @@ const Home = () => {
   useEffect(() => {
     const getTable = async () => {
       try {
-        if ( sessionStorage.getItem('table_id') !== table_id || !sessionStorage.getItem('table_id')) {
+        if ( localStorage.getItem('table_id') !== table_id || !localStorage.getItem('table_id')) {
           const responseTable = await axios.get(
             `${process.env.REACT_APP_BE_URL}/api/table/${table_id}`
           );  
           if (responseTable.status >= 200 && responseTable.status < 300) {
             const table = responseTable.data
             if (table.status === 'EMPTY') {
-              sessionStorage.setItem('table_id', table_id)
+              localStorage.setItem('table_id', table_id)
             }
   
             // if (table.status == 'EMPTY') {

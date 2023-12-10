@@ -4,7 +4,7 @@ import { Navigate, Route  } from 'react-router-dom';
 const ProtectedRoute = ({ children }) => {
     // return children
 
-    if (sessionStorage.getItem("table_id")) {
+    if (localStorage.getItem("table_id")) {
         return children
     }
 
