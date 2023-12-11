@@ -1,5 +1,6 @@
 import React , {useEffect} from "react";
 import { useParams  } from "react-router-dom";
+import { v4 as uuidv4 } from 'uuid';
 
 import Helmet from "../components/Helmet/Helmet.js";
 import { Container, Row, Col, ListGroup, ListGroupItem } from "reactstrap";
@@ -49,30 +50,29 @@ const Home = () => {
   useEffect(() => {
     const getTable = async () => {
       try {
-        if ( localStorage.getItem('table_id') !== table_id || !localStorage.getItem('table_id')) {
+        
           const responseTable = await axios.get(
             `${process.env.REACT_APP_BE_URL}/api/table/${table_id}`
           );  
           if (responseTable.status >= 200 && responseTable.status < 300) {
             const table = responseTable.data
-            if (table.status === 'EMPTY') {
+            console.log('table', table);
+            if (table.status === 'EMPTY' && table.tableAccessKey === null) {
+              const table_access_key = uuidv4();
+              const responseSetTableAccessKey = await axios.get(
+                `${process.env.REACT_APP_BE_URL}/api/table/addTableAccessKey/${table_id}/${table_access_key}`, 
+              );
+              if (responseSetTableAccessKey.status >= 200 && responseSetTableAccessKey.status < 300) {
+                const responseSetTableAccessKeyData = responseSetTableAccessKey.data
+                if (responseSetTableAccessKeyData !== "Can't set table access key" &&
+                responseSetTableAccessKeyData !== "No item have this ID" ) {
+                  localStorage.setItem('table_access_key', table_access_key);
+                  localStorage.removeItem('orderId')
+                }
+              }
               localStorage.setItem('table_id', table_id)
             }
-  
-            // if (table.status == 'EMPTY') {
-            // }
-            // else {
-            //   if (sessionStorage.getItem('table_id') === null) {
-            //     sessionStorage.setItem('table_id', table_id)
-            //   }
-            //   console.log('table_id', table_id)
-  
-            // }
-          } else {
-          }
         }
-
-        
       } catch (err) {
       } 
     };
@@ -98,13 +98,13 @@ const Home = () => {
                   </p>
 
                   <div className="hero__btns d-flex align-items-center gap-5 mt-4">
-                    <button className="order__btn d-flex align-items-center justify-content-between">
-                      Order now <i class="ri-arrow-right-s-line"></i>
-                    </button>
-
-                    <button className="all__foods-btn">
-                      <Link to="/foods">See all foods</Link>
-                    </button>
+                    
+                    <Link to="/foods" className="order__btn d-flex align-items-center justify-content-between">Order now 
+                       <i class="ri-arrow-right-s-line"></i>
+                    </Link>  
+                    
+                    <Link to="/foods" className="all__foods-btn">See all foods </Link>
+                    
                   </div>
 
                   <div className=" hero__service  d-flex align-items-center gap-5 mt-5 ">

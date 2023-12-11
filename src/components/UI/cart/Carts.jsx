@@ -55,7 +55,7 @@ const Carts = () => {
           const responseOrderData = responseOrder.data
           if (responseOrderData !== "This table is UNEMPTY") {
             toggleCart()
-            sessionStorage.setItem('orderId', JSON.stringify(responseOrderData.id))
+            localStorage.setItem('orderId', JSON.stringify(responseOrderData.id))
             cartProducts.map((product) => (
               dispatch(cartActions.deleteItem({ id: product.id, isCombo: false }))
             ))
@@ -82,7 +82,7 @@ const Carts = () => {
     }
     else {
       try {
-        const orderId = JSON.parse(sessionStorage.getItem('orderId'))
+        const orderId = JSON.parse(localStorage.getItem('orderId'))
         const newFoodsData = 
           cartProducts.map((product) => (
             {
@@ -137,7 +137,7 @@ const Carts = () => {
   };
 
   const isCreateNewOrder = () => {
-    return sessionStorage.getItem('orderId') === null
+    return localStorage.getItem('orderId') === null
   }
   return (
     <div className="cart__container">

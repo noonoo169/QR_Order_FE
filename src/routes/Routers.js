@@ -6,7 +6,7 @@ import AllFoods from "../pages/AllFoods";
 import FoodDetails from "../pages/FoodDetails";
 import Checkout from "../pages/Checkout";
 import Contact from "../pages/Contact";
-import Login from "../pages/Login";
+import TableOrderedError from "../pages/TableOrderedError";
 import Register from "../pages/Register";
 import ProtectedRoute from "../components/AuthTable/ProtectedRoute";
 import Order from "../pages/Order";
@@ -21,7 +21,7 @@ const Routers = () => {
       <Route path="/foods/:id" element={<ProtectedRoute> <FoodDetails /> </ProtectedRoute>} />
       <Route path="/order" element={< ProtectedRoute><Order /> </ProtectedRoute>} />
       <Route path="/checkout" element={<ProtectedRoute> <Checkout /> </ProtectedRoute>} />
-      <Route path="/login" element={<Login />} />
+      <Route path="/tableOrderedError" element={<TableOrderedError />} />
       <Route path="/register" element={<Register />} />
       <Route path="/contact" element={<Contact />} />
     </Routes>

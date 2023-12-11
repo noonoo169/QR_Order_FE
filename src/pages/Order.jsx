@@ -9,7 +9,7 @@ import Button from '@mui/material/Button';
 import ButtonGroup from '@mui/material/ButtonGroup';
 import CallStaff from "../components/UI/call-staff/CallStaff";
 const Order = () => {
-  const orderId = JSON.parse(sessionStorage.getItem('orderId'))
+  const orderId = JSON.parse(localStorage.getItem('orderId'))
   const [order, setOrder] = useState({});
   const [error, setError] = useState('')
   

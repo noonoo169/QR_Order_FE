@@ -30,12 +30,19 @@
   background: #df2020;
   color: #fff;
   transition: 0.3s;
+  border-radius: 7px;
+  padding: 7px 21px;
+  border: 1px solid #df2020 !important;     
 }
 
+.all__foods-btn:hover,
 .order__btn:hover {
-  background: #212245;
+  opacity: 0.6;
 }
+
 .all__foods-btn {
+  border-radius: 7px;
+  padding: 7px 21px;
   background: transparent;
   border: 1px solid #df2020 !important;
 }
