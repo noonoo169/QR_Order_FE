@@ -58,6 +58,7 @@ const Home = () => {
             const table = responseTable.data
             console.log('table', table);
             if (table.status === 'EMPTY' && table.tableAccessKey === null) {
+              console.log("Can order")
               const table_access_key = uuidv4();
               const responseSetTableAccessKey = await axios.get(
                 `${process.env.REACT_APP_BE_URL}/api/table/addTableAccessKey/${table_id}/${table_access_key}`, 

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import axios from "axios";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const ProtectedRoute = ({ children }) => {
   const [isAuthorized, setIsAuthorized] = useState(false);
@@ -35,13 +36,12 @@ const ProtectedRoute = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <div>Loading...</div>;
+    return <CircularProgress />
   }
 
   if (!isAuthorized) {
     return <Navigate to="/tableOrderedError" />;
   }
-
   return children;
 };
 

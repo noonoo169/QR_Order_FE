@@ -32,7 +32,7 @@ const CallStaff = (props) => {
         try {
             const responseCategory = await axios.get(
               
-              `${process.env.REACT_APP_BE_URL}/api/call-staff/${sessionStorage.getItem('table_id')}`
+              `${process.env.REACT_APP_BE_URL}/api/call-staff/${localStorage.getItem('table_id')}`
             );
 
             if (responseCategory.status >= 200 && responseCategory.status < 300) {

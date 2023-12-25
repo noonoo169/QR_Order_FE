@@ -7,8 +7,8 @@ const TableOrderedError = () => {
 
 
   return (
-    <Helmet title="Login">
-      <CommonSection title="Login" />
+    <Helmet title="Error">
+      <CommonSection title="Error" />
       <section>
         <Container>
           <Row>
