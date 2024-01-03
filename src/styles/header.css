@@ -74,7 +74,7 @@
   top: 0;
   left: 0;
   background: #fff;
-  z-index: 99999;
+  z-index: 99;
   box-shadow: 5px 5px 15px -5px #fde4e4;
 }
 
@@ -87,7 +87,7 @@
     margin-top: -15px;
   }
 
-  .navigation {
+  /* .navigation {
     position: fixed;
     top: 0;
     left: 0;
@@ -97,13 +97,26 @@
     z-index: 99;
     transition: opacity 0.4s ease-in-out, visibility 0.4s ease-in-out;
     opacity: 0;
-    visibility: hidden;
   }
   
   .show__menu {
     visibility: visible;
     opacity: 1;
+  } */
+  .navigation {
+    position: fixed;
+    top: 0;
+    right: -100%; /* Initially hide the menu off-screen to the right */
+    width: 100%; /* Adjust this width as needed */
+    height: 100%;
+    z-index: 99;
+    transition: transform 0.4s ease-in-out; /* Use transform for the sliding effect */
   }
+  
+  .show__menu {
+    transform: translateX(-100%); /*Move the menu back to its original position */
+  }
+  
 
   .menu {
     position: absolute;
@@ -117,6 +130,7 @@
     align-items: center;
     z-index: 100;
     line-height: 20px;
+    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
   }
 
   .menu a {
@@ -124,6 +138,7 @@
   }
 
   .mobile__menu {
+    margin: 0px 10px;
     display: block;
   }
 

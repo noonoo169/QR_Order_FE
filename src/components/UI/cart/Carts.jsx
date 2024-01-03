@@ -22,6 +22,7 @@ const Carts = () => {
   const totalQuantity = useSelector((state) => state.cart.totalQuantity);
   const [open, setOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const showCart = useSelector((state) => state.cartUi.cartIsVisible);
 
   const createNewOrderAction = async () => {
     if (totalQuantity === 0) {
@@ -140,7 +141,7 @@ const Carts = () => {
     return localStorage.getItem('orderId') === null
   }
   return (
-    <div className="cart__container">
+    <div className={`cart__container ${showCart ? "showCart" : ""}`}>
       <ListGroup className="cart">
         <Snackbar open={open} autoHideDuration={1000} onClose={handleClose}>
           <Alert severity="error" sx={{ width: '100%', mb: '100px' }}>
