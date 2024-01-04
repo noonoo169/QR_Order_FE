@@ -105,7 +105,6 @@ const AllFoods = () => {
   }, [choosedCategory]);
 
   const changePage = ({ selected }) => {
-    console.log('select', {selected})
     setPageNumber(selected);
     visitedPage = selected * productPerPage;
     setDisplayPage(
@@ -158,7 +157,7 @@ const AllFoods = () => {
                       style={{ width: '100%', background: 'none' }}
                     />
                     <span>
-                      <i class="ri-search-line"></i>
+                      <i className="ri-search-line"></i>
                     </span>
                   </div>
                 </Col>

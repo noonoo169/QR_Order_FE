@@ -40,9 +40,6 @@ const ProductCard = (props) => {
       </div>
 
       <div className="product__content">
-        {/* <h5>
-          <Link to={`/foods/${id}`}>{name}</Link>
-        </h5> */}
         <h5>
           <Link to={`/foods/${id}`}
               state={{ isCombo: isCombo }}>{name}</Link>

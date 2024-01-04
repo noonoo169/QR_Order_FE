@@ -150,7 +150,7 @@ const Carts = () => {
         </Snackbar>
         <div className="cart__close">
           <span onClick={toggleCart}>
-            <i class="ri-close-fill"></i>
+            <i className="ri-close-fill"></i>
           </span>
         </div>
 
